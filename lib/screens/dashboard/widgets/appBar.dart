@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../constants/colors.dart';
@@ -13,10 +15,6 @@ class DashboardAppbar extends StatelessWidget implements PreferredSizeWidget{
   Widget build(BuildContext context) {
     return AppBar(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      leading: const Icon(
-        Icons.menu,
-        color: Colors.white,
-      ),
       title: const Text(fAppName, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
       centerTitle: true,
       elevation: 0,
@@ -30,9 +28,7 @@ class DashboardAppbar extends StatelessWidget implements PreferredSizeWidget{
             color: fCardBgColor,
           ),
           child: IconButton(
-            onPressed: () {
-
-            },
+            onPressed: () {},
             icon: const Image(
               image: AssetImage(fUserProfileImage),
             ),

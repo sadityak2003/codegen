@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../constants/colors.dart';
 import '../../../constants/image_strings.dart';
@@ -11,12 +12,14 @@ class DashBoardTopCoursesNew extends StatelessWidget {
     required this.heading,
     required this.subHeading,
     this.onPressed,
+    required this.lottie,
   });
 
   final String title;
   final String heading;
   final String subHeading;
   final VoidCallback? onPressed;
+  final String lottie;
 
   @override
   Widget build(BuildContext context) {
@@ -44,11 +47,13 @@ class DashBoardTopCoursesNew extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     )),
-                    const Flexible(
-                        child: Image(
-                      image: AssetImage(fTopCourseImage1),
-                      height: 110,
-                    ))
+                     Flexible(
+                        child: Container(
+                          width: 150,
+                          height: 120,
+                          child: Lottie.network(lottie),
+                        )
+                    )
                   ],
                 ),
                 Row(

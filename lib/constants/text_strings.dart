@@ -2,6 +2,7 @@
 // Authentication Text
 const String fLogin = "Login";
 const String fSignUp = "SignUp";
+const String fSignUpWithPhone = "SignUp With Phone";
 
 // Splash Screen Text
 const String fAppName = "CodeGen";
@@ -20,8 +21,8 @@ const String fOnBoardingCounter3 = "3/3";
 
 
 // Welcome Screen Text
-const String fWelcomeTitle = "Build Awesome Apps";
-const String fWelcomeSubTitle = "Lets build exciting apps with the new journey";
+const String fWelcomeTitle = "Learn Awesome Techs";
+const String fWelcomeSubTitle = "Lets learn exciting techs with the new journey";
 
 // Login Screen Text
 const String fLoginTitle = "Welcome Back!";

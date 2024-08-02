@@ -1,5 +1,9 @@
+import 'package:codegen/auth/login/login.dart';
+import 'package:codegen/auth/signup/signup1.dart';
+import 'package:codegen/auth/signup_phone/signup_phone.dart';
 import 'package:codegen/constants/colors.dart';
 import 'package:codegen/screens/dashboard/dashboard.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants/image_strings.dart';
@@ -53,7 +57,7 @@ class WelcomeScreen extends StatelessWidget {
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Dashboard()));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LoginPage()));
                           },
                           child: Text(fLogin.toUpperCase()),
                         ),
@@ -64,13 +68,23 @@ class WelcomeScreen extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Dashboard()));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SignUpPage1of4()));
                           },
                           child: Text(fSignUp.toUpperCase()),
                         ),
-                      )
+                      ),
                     ],
-                  )
+                  ),
+                  const SizedBox(height: 5),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SignUpWithPhone()));
+                      },
+                      child: Text(fSignUpWithPhone.toUpperCase()),
+                    ),
+                  ),
                 ],
               ),
             ),
