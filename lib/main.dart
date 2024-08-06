@@ -1,9 +1,9 @@
-import 'package:codegen/auth/login/login.dart';
-import 'package:codegen/auth/signup/signup1.dart';
+
 import 'package:codegen/firebase_options.dart';
+import 'package:codegen/provider/auth/forgot_password.dart';
+import 'package:codegen/provider/auth/login.dart';
 import 'package:codegen/screens/dashboard/dashboard.dart';
 import 'package:codegen/screens/splash/splash.dart';
-import 'package:codegen/screens/welcome/welcome.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -30,9 +30,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MainPage(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthService()),
+        ChangeNotifierProvider(create: (_) => AuthService1())
+      ],
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home:  MainPage(),
+      ),
     );
   }
 }

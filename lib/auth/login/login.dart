@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:codegen/screens/dashboard/dashboard.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../cmmon_widgets/showSnackBar.dart';
+import '../../provider/auth/forgot_password.dart';
+import '../../provider/auth/login.dart';
 import '../signup/signup1.dart';
 import '../../cmmon_widgets/custom_container.dart';
 import 'forgot_password.dart';
@@ -23,75 +26,25 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> signIn() async {
     try {
       if (_formKey.currentState!.validate()) {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text,
-        );
-
-        if (!FirebaseAuth.instance.currentUser!.emailVerified) {
-          await sendEmailVerification(context);
-        } else {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const Dashboard()));
-        }
+        final authService = Provider.of<AuthService1>(context, listen: false);
+        await authService.signInWithEmail(emailController.text, passwordController.text);
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const Dashboard()));
       }
     } on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message!);
     }
   }
 
-  Future<UserCredential?> signInWithGoogle() async {
+  Future<void> signInWithGoogle() async {
     try {
-      final googleUser = await GoogleSignIn().signIn();
-
-      final googleAuth = await googleUser?.authentication;
-
-      final cred = GoogleAuthProvider.credential(
-        idToken: googleAuth?.idToken,
-        accessToken: googleAuth?.accessToken,
-      );
-
-      return await FirebaseAuth.instance.signInWithCredential(cred)
-                               .then((value) => Navigator.of(context)
-                               .pushReplacement(MaterialPageRoute(builder: (context) => const Dashboard())));
+      final authService = Provider.of<AuthService1>(context, listen: false);
+      await authService.signInWithGoogle();
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const Dashboard()));
     } on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message!);
     } catch (e) {
       showSnackBar(context, "An error occurred using Google Sign-In. Try again.");
     }
-    return null;
-  }
-
-  Future<void> sendEmailVerification(BuildContext context) async {
-    try {
-      FirebaseAuth.instance.currentUser!.sendEmailVerification();
-      showSnackBar(context, 'Email verification sent!');
-    } on FirebaseAuthException catch (e) {
-      showSnackBar(context, e.message!);
-    }
-  }
-
-
-  String? validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your email';
-    }
-    String pattern =
-        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$';
-    RegExp regex = RegExp(pattern);
-    if (!regex.hasMatch(value)) {
-      return 'Enter a valid email address';
-    }
-    return null;
-  }
-
-  String? validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your password';
-    }
-    if (value.length < 6) {
-      return 'Password must be at least 6 characters long';
-    }
-    return null;
   }
 
   @override
@@ -129,9 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                         },
                         child: Text(
                           "Create Account",
-                          style: TextStyle(
-                            color: Colors.deepPurple.shade400,
-                          ),
+                          style: TextStyle(color: Colors.deepPurple.shade400),
                         ),
                       ),
                     ],
@@ -242,39 +193,26 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-}
 
-/*
-Future<void> signInWithGoogle() async {
-    try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-      if (googleUser == null) {
-        // The user canceled the sign-in
-        return;
-      }
-
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-
-      // Navigate to the Dashboard if successful
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const Dashboard()));
-    } on FirebaseAuthException catch (e) {
-      showSnackBar(context, e.message!);
-    } catch (e) {
-      showSnackBar(context, "An error occurred using Google Sign-In. Try again.");
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your email';
     }
+    String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$';
+    RegExp regex = RegExp(pattern);
+    if (!regex.hasMatch(value)) {
+      return 'Enter a valid email address';
+    }
+    return null;
   }
 
-  // Login with Apple
-                      CustomContainer(icon: FontAwesomeIcons.apple, color: Colors.black, onPressed: () {}),
-
-                      // Login with Facebook
-                      CustomContainer(icon: FontAwesomeIcons.facebook, color: Colors.blue, onPressed: () {}),
- */
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your password';
+    }
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters long';
+    }
+    return null;
+  }
+}

@@ -1,11 +1,8 @@
-import 'package:codegen/auth/login/verify_otp.dart';
-import 'package:codegen/auth/signup_phone/verify_otp_phone.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
+import 'package:provider/provider.dart';
+import '../../provider/auth/forgot_password.dart';
 import 'login.dart';
+import 'verify_otp.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -17,26 +14,25 @@ class ForgotPasswordPage extends StatefulWidget {
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   TextEditingController phoneController = TextEditingController();
 
-  Future<void> submitPhone() async {
+  void submitPhone() {
     String phone = phoneController.text.trim();
 
     if (!phone.startsWith('+')) {
-      // Ensure the phone number includes the country code.
       phone = '+1' + phone; // Example: prefix with +1 for US numbers.
     }
 
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: phone,
-      verificationCompleted: (PhoneAuthCredential credential) {},
-      verificationFailed: (FirebaseAuthException e) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message!)));
-      },
-      codeSent: (String verificationId, int? resendToken) {
+    final authService = Provider.of<AuthService>(context, listen: false);
+
+    authService.verifyPhoneNumber(
+      phone,
+      onCodeSent: (verificationId) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) => ForgotVerifyOTP(verificationId: verificationId),
         ));
       },
-      codeAutoRetrievalTimeout: (String verificationId) {},
+      onVerificationFailed: (e) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message!)));
+      },
     );
   }
 
